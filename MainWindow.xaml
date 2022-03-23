@@ -22,7 +22,7 @@
         <StackPanel>
             <Image Name="ImageViewer1" Height="251" Width="313" Margin="0,80,0,0"/>
         </StackPanel>
-        <Button Name="Process" IsEnabled="False" Content="Add Padding" HorizontalAlignment="Center" Margin="0,343,0,0" VerticalAlignment="Top" Height="62" Width="160"/>
+        <Button Name="Process" IsEnabled="False" Click="ProcessButton_Click"  Content="Add Padding" HorizontalAlignment="Center" Margin="0,343,0,0" VerticalAlignment="Top" Height="62" Width="160"/>
     </Grid>
 
 </Window>
