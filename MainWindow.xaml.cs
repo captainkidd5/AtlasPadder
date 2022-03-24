@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -41,7 +43,7 @@ namespace AtlasPadder
         {
             OpenFileDialog dlg = new OpenFileDialog();
             dlg.InitialDirectory = "c:\\";
-            dlg.Filter = "Image files (*.jpg)|*.jpg|All Files (*.*)|*.*";
+            dlg.Filter = "Image files (*.jpg;*.png)|*.jpg;*.png|All Files (*.*)|*.*";
             dlg.RestoreDirectory = true;
 
             if (dlg.ShowDialog() == true)
@@ -62,7 +64,7 @@ namespace AtlasPadder
 
         private void ProcessButton_Click(object sender, RoutedEventArgs e)
         {
-            Bitmap bitMap;
+            Bitmap originalBitmap;
             using (MemoryStream outStream = new MemoryStream())
             {
                 BitmapEncoder enc = new BmpBitmapEncoder();
@@ -70,24 +72,50 @@ namespace AtlasPadder
                 enc.Save(outStream);
                 System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
 
-                bitMap = new Bitmap(bitmap);
+                originalBitmap = new Bitmap(bitmap);
             }
 
-            _imageWidth = bitMap.Width;
-            _imageHeight = bitMap.Height;
+            _imageWidth = originalBitmap.Width;
+            _imageHeight = originalBitmap.Height;
 
             _tileSize = int.Parse(TileSizeInput.Text);
 
             int totalTiles = _imageWidth / _tileSize;
 
+
+
+
+
             //extra row/column per side of a square with the length of the tile
-            int newPixelsPerTile = _tileSize * 4;
+            int newPixelsPerTile = (int)Math.Sqrt(_tileSize);
 
             //multiply by number of tiles in tile set
             int sizeToIncreaseBy = newPixelsPerTile * totalTiles;
 
             int newDimensions = _imageWidth + sizeToIncreaseBy / 2;
+
+            //for(int i =0; i < )
+
             Bitmap expandedBitMap = new Bitmap(newDimensions, newDimensions);
+
+            System.Drawing.Color[,] newColors = new System.Drawing.Color[newDimensions, newDimensions];
+
+            for(int x =0; x < newDimensions; x++)
+            {
+                for(int y =0; y < newDimensions; y++)
+                {
+                    newColors[x,y] = originalBitmap.GetPixel(x, y);
+                }
+            }
+
+            byte[] newData = new byte[];
+            using (var ms = new MemoryStream(imageData))
+            {
+                Image image = Image.FromStream(ms);
+                image.Save(@"C:\newImage.jpg");
+            }
+
+
             SaveBitMapImage();
         }
         private void SaveBitMapImage()
@@ -101,6 +129,8 @@ namespace AtlasPadder
                 encoder.Save(fileStream);
             }
         }
+
+   
 
     }
 }
