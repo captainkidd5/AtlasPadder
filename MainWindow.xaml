@@ -6,10 +6,44 @@
         xmlns:local="clr-namespace:AtlasPadder"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-
+    <Window.Resources>
+        
+    </Window.Resources>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border Background="#2f5cb6"/>
+        <Border Grid.Column ="1" Background="#1f3d7a"/>
+        <Border Grid.Row="1" Grid.ColumnSpan="2" Background="#152951"/>
 
-        <StackPanel Orientation="Horizontal" Background="LightBlue" Height="48" Margin="0,-380,0,0">
+        <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,60" Height="48" VerticalAlignment="Center" Background="LightBlue">
+            <Label Margin="5,0,0,0" Height="32" Name="TileSizeLabel" FontSize="14">
+                Tile Size:
+            </Label>
+
+            <TextBox Name="TileSizeInput" FontSize="20" Margin="80,0,0,0" Height="32" Width="82">
+                <TextBox.Text>
+                    <Binding Path="_tileSize"
+        UpdateSourceTrigger="LostFocus">
+                        <Binding.ValidationRules>
+                            <local:TileSizeValidator></local:TileSizeValidator>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
+        </StackPanel>
+        
+        <StackPanel Grid.Column="1" Grid.Row="0">
+            <Image Name="ImageViewer1" Margin="0,80,0,0" Stretch="UniformToFill"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" Background="LightBlue" Height="48" Margin="0,0,0,0" VerticalAlignment="Bottom">
             <Label Margin="10,0,0,0" Height="23" Name="Label1">
                 Current File:
             </Label>
@@ -19,10 +53,13 @@
             </Button>
 
         </StackPanel>
-        <StackPanel>
-            <Image Name="ImageViewer1" Height="251" Width="313" Margin="0,80,0,0"/>
+        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" Background="LightBlue" Height="145" Margin="0,0,0,0" VerticalAlignment="Bottom">
+           
+            <Button Name="Process" IsEnabled="False" Click="ProcessButton_Click"  Content="Add Padding" HorizontalAlignment="Center" Margin="160,40,0,0" VerticalAlignment="Top" Height="62" Width="160"/>
+
         </StackPanel>
-        <Button Name="Process" IsEnabled="False" Click="ProcessButton_Click"  Content="Add Padding" HorizontalAlignment="Center" Margin="0,343,0,0" VerticalAlignment="Top" Height="62" Width="160"/>
+
+        
     </Grid>
 
 </Window>

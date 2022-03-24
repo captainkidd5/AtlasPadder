@@ -76,9 +76,18 @@ namespace AtlasPadder
             _imageWidth = bitMap.Width;
             _imageHeight = bitMap.Height;
 
+            _tileSize = int.Parse(TileSizeInput.Text);
 
+            int totalTiles = _imageWidth / _tileSize;
 
+            //extra row/column per side of a square with the length of the tile
+            int newPixelsPerTile = _tileSize * 4;
 
+            //multiply by number of tiles in tile set
+            int sizeToIncreaseBy = newPixelsPerTile * totalTiles;
+
+            int newDimensions = _imageWidth + sizeToIncreaseBy / 2;
+            Bitmap expandedBitMap = new Bitmap(newDimensions, newDimensions);
             SaveBitMapImage();
         }
         private void SaveBitMapImage()
