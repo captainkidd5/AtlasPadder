@@ -13,7 +13,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -98,39 +97,39 @@ namespace AtlasPadder
 
             Bitmap expandedBitMap = new Bitmap(newDimensions, newDimensions);
 
-            System.Drawing.Color[,] newColors = new System.Drawing.Color[newDimensions, newDimensions];
 
-            for(int x =0; x < newDimensions; x++)
+            int xOffset = 1;
+            int yOffset = 1;
+            for (int x = 0; x < newDimensions - 1; x++)
             {
-                for(int y =0; y < newDimensions; y++)
+                for (int y = 0; y < newDimensions - 1; y++)
                 {
-                    newColors[x,y] = originalBitmap.GetPixel(x, y);
+                    Color color = Color.Transparent;
+
+
+                    if (y % (_tileSize + 1) == 0 || y % (_tileSize + 2) == 0)
+                        yOffset--;
+
+
+                    color = originalBitmap.GetPixel(x + xOffset, y + yOffset);
+                    expandedBitMap.SetPixel(x, y, color);
+
+                   // yOffset++;
+
                 }
+                if (x % (_tileSize + 1) == 0 || x % (_tileSize + 2) == 0)
+                    xOffset--;
+                //xOffset++;
+                yOffset = 1;
+
             }
 
-            byte[] newData = new byte[];
-            using (var ms = new MemoryStream(imageData))
-            {
-                Image image = Image.FromStream(ms);
-                image.Save(@"C:\newImage.jpg");
-            }
 
 
-            SaveBitMapImage();
-        }
-        private void SaveBitMapImage()
-        {
-            string path = $"{System.AppDomain.CurrentDomain.BaseDirectory}ImageOutput/{_fileNameSafe}";
-
-            BitmapEncoder encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(_bitMapImage));
-            using (var fileStream = new System.IO.FileStream(path, System.IO.FileMode.Create))
-            {
-                encoder.Save(fileStream);
-            }
+            BitmapImage alteredImage = BitmapHelper.ToBitmapImage(expandedBitMap);
+            BitmapHelper.SaveBitMapImage(alteredImage, _fileNameSafe);
         }
 
-   
 
     }
 }
