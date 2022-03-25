@@ -1,1 +1,1 @@
-﻿This is the output folder of finished atlas'
+﻿This is the output folder of finished texture. View in Bin.

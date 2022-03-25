@@ -12,10 +12,10 @@ namespace AtlasPadder
 {
     internal static class BitmapHelper
     {
-
+        public static string OutPutFolder => $"{System.AppDomain.CurrentDomain.BaseDirectory}ImageOutput";
         public static void SaveBitMapImage(BitmapImage bitmapImage, string fileName)
         {
-            string path = $"{System.AppDomain.CurrentDomain.BaseDirectory}ImageOutput/Updated_{fileName}";
+            string path = $"{OutPutFolder}/Updated_{fileName}";
 
             BitmapEncoder encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(bitmapImage));

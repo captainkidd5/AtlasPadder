@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -29,6 +30,7 @@ namespace AtlasPadder
             InitializeComponent();
 
         }
+        private readonly int _defaultTizeSize = 16;
 
         private BitmapImage _bitMapImage;
         private string _fileNameSafe;
@@ -36,12 +38,11 @@ namespace AtlasPadder
         private int _imageWidth;
         private int _imageHeight;
 
-        private int _tileSize = 16;
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
-            dlg.InitialDirectory = "c:\\";
+            dlg.InitialDirectory = $"{System.AppDomain.CurrentDomain.BaseDirectory}ExampleInput";
             dlg.Filter = "Image files (*.jpg;*.png)|*.jpg;*.png|All Files (*.*)|*.*";
             dlg.RestoreDirectory = true;
 
@@ -57,11 +58,11 @@ namespace AtlasPadder
                 ImageViewer1.Source = _bitMapImage;
 
 
-                Process.IsEnabled = true;
+                ProcessImage.IsEnabled = true;
             }
         }
 
-        private void ProcessButton_Click(object sender, RoutedEventArgs e)
+        private void ProcessImageButton_Click(object sender, RoutedEventArgs e)
         {
             Bitmap originalBitmap;
             using (MemoryStream outStream = new MemoryStream())
@@ -77,49 +78,55 @@ namespace AtlasPadder
             _imageWidth = originalBitmap.Width;
             _imageHeight = originalBitmap.Height;
 
-            _tileSize = int.Parse(TileSizeInput.Text);
+            int tileSize = 0;
+            
+            if(int.TryParse(TileSizeInput.Text, out tileSize))
+            {
 
-            int totalTiles = _imageWidth / _tileSize;
+            }
+            else
+            {
+                tileSize = _defaultTizeSize;
+            }
 
-
-
+            int totalTiles = _imageWidth / tileSize;
 
 
             //extra row/column per side of a square with the length of the tile
-            int newPixelsPerTile = (int)Math.Sqrt(_tileSize);
+            int newPixelsPerTile = (int)Math.Sqrt(tileSize);
 
             //multiply by number of tiles in tile set
             int sizeToIncreaseBy = newPixelsPerTile * totalTiles;
 
             int newDimensions = _imageWidth + sizeToIncreaseBy / 2;
 
-            //for(int i =0; i < )
 
             Bitmap expandedBitMap = new Bitmap(newDimensions, newDimensions);
 
 
             int xOffset = 1;
             int yOffset = 1;
-            for (int x = 0; x < newDimensions - 1; x++)
-            {
-                for (int y = 0; y < newDimensions - 1; y++)
+            Color color = Color.Transparent;
+
+            for (int x = 0; x < newDimensions ; x++)
+            {          
+                    if (x % (tileSize + 0) == 0 || x % (tileSize + 1) == 0 || x == 1)
+                        xOffset--;
+                
+                for (int y = 0; y < newDimensions; y++)
                 {
-                    Color color = Color.Transparent;
-
-
-                    if (y % (_tileSize + 1) == 0 || y % (_tileSize + 2) == 0)
-                        yOffset--;
-
+  
+                        if ((y + 0) % (tileSize + 0) == 0 || y % (tileSize + 1) == 0 || y == 1)
+                            yOffset--;
 
                     color = originalBitmap.GetPixel(x + xOffset, y + yOffset);
+
+
                     expandedBitMap.SetPixel(x, y, color);
 
-                   // yOffset++;
 
                 }
-                if (x % (_tileSize + 1) == 0 || x % (_tileSize + 2) == 0)
-                    xOffset--;
-                //xOffset++;
+
                 yOffset = 1;
 
             }
@@ -128,6 +135,12 @@ namespace AtlasPadder
 
             BitmapImage alteredImage = BitmapHelper.ToBitmapImage(expandedBitMap);
             BitmapHelper.SaveBitMapImage(alteredImage, _fileNameSafe);
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
+            {
+                FileName = BitmapHelper.OutPutFolder,
+                UseShellExecute = true,
+                Verb = "open"
+            });
         }
 
 

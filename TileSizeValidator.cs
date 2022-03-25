@@ -8,6 +8,9 @@ using System.Windows.Controls;
 
 namespace AtlasPadder
 {
+    /// <summary>
+    /// TODO: Add this to form input validation
+    /// </summary>
     public class TileSizeValidator : ValidationRule
     {
         public override ValidationResult Validate
