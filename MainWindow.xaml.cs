@@ -83,6 +83,12 @@ namespace AtlasPadder
 
             if (!int.TryParse(TileSizeInput.Text, out tileSize))
                 tileSize = _defaultTizeSize;
+
+            if(tileSize == 0 || tileSize % 4 == 0)
+            {
+                MessageBox.Show("Tile size must be a multiple of 4 and different from 0", "Oops...", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
             Bitmap expandedBitMap = Pad(originalBitmap, tileSize);
             SaveUpdatedImage(expandedBitMap);
         }
