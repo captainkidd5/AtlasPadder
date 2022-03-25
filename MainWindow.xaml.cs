@@ -117,7 +117,7 @@ namespace AtlasPadder
 
             for (int x = 0; x < newDimensions; x++)
             {
-                if (x % (tileSize + 0) == 0 || x % (tileSize + 1) == 0 || x == 1)
+                if (x % (tileSize + 1) == 0 || x % (tileSize + 2) == 0 || x == 1)
                     xOffset--;
 
                 for (int y = 0; y < newDimensions; y++)
