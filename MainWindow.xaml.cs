@@ -79,24 +79,31 @@ namespace AtlasPadder
             _imageHeight = originalBitmap.Height;
 
             int tileSize = 0;
-            
-            if(int.TryParse(TileSizeInput.Text, out tileSize))
-            {
 
-            }
-            else
-            {
+
+            if (!int.TryParse(TileSizeInput.Text, out tileSize))
                 tileSize = _defaultTizeSize;
-            }
+            Bitmap expandedBitMap = Pad(originalBitmap, tileSize);
+            SaveUpdatedImage(expandedBitMap);
+        }
 
+       
+        /// <summary>
+        /// Main tile padding algorithm (incorrect)
+        /// </summary>
+        /// <param name="originalBitmap"></param>
+        /// <param name="tileSize"></param>
+        /// <returns></returns>
+        private Bitmap Pad(Bitmap originalBitmap, int tileSize)
+        {
             int totalTiles = _imageWidth / tileSize;
 
 
             //extra row/column per side of a square with the length of the tile
-            int newPixelsPerTile = (int)Math.Sqrt(tileSize);
+            int tileSideInPixels = (int)Math.Sqrt(tileSize);
 
             //multiply by number of tiles in tile set
-            int sizeToIncreaseBy = newPixelsPerTile * totalTiles;
+            int sizeToIncreaseBy = tileSideInPixels * totalTiles;
 
             int newDimensions = _imageWidth + sizeToIncreaseBy / 2;
 
@@ -108,16 +115,16 @@ namespace AtlasPadder
             int yOffset = 1;
             Color color = Color.Transparent;
 
-            for (int x = 0; x < newDimensions ; x++)
-            {          
-                    if (x % (tileSize + 0) == 0 || x % (tileSize + 1) == 0 || x == 1)
-                        xOffset--;
-                
+            for (int x = 0; x < newDimensions; x++)
+            {
+                if (x % (tileSize + 0) == 0 || x % (tileSize + 1) == 0 || x == 1)
+                    xOffset--;
+
                 for (int y = 0; y < newDimensions; y++)
                 {
-  
-                        if ((y + 0) % (tileSize + 0) == 0 || y % (tileSize + 1) == 0 || y == 1)
-                            yOffset--;
+
+                    if ((y + 0) % (tileSize + 0) == 0 || y % (tileSize + 1) == 0 || y == 1)
+                        yOffset--;
 
                     color = originalBitmap.GetPixel(x + xOffset, y + yOffset);
 
@@ -131,8 +138,15 @@ namespace AtlasPadder
 
             }
 
+            return expandedBitMap;
+        }
 
-
+        /// <summary>
+        /// Saves bitmap to new image at output directory,then opens output directory
+        /// </summary>
+        /// <param name="expandedBitMap"></param>
+        private void SaveUpdatedImage(Bitmap expandedBitMap)
+        {
             BitmapImage alteredImage = BitmapHelper.ToBitmapImage(expandedBitMap);
             BitmapHelper.SaveBitMapImage(alteredImage, _fileNameSafe);
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
@@ -142,7 +156,5 @@ namespace AtlasPadder
                 Verb = "open"
             });
         }
-
-
     }
 }
